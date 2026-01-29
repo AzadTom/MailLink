@@ -1,0 +1,54 @@
+import api from "../../../api/axios";
+import { EmailListResponse, EmailMessageListResponse } from "../type/type";
+
+export const getEmailList = async (): Promise<EmailListResponse | null> => {
+    try {
+        const response = await api.get("/email_list");
+        if (response.status === 200) {
+            return response.data;
+        }
+
+        return null;
+
+
+    } catch (error) {
+        console.error(error);
+        return null;
+
+    }
+}
+
+export const getEmailMessageList = async (): Promise<EmailMessageListResponse | null> => {
+    try {
+        const response = await api.get("/email_message_list");
+        if (response.status === 200) {
+            return response.data;
+        }
+        return null;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+
+    }
+}
+
+export const sendMail = async (email: string, subject: string, content: string, name: string) => {
+    try {
+        const response = await api.post("/send-email", {
+            email: email,
+            subject: subject,
+            content: content,
+            name: name,
+        });
+        if (response.status === 200) {
+            return response.data;
+        }
+        return null;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+
+    }
+}
