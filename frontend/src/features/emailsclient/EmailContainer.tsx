@@ -124,7 +124,7 @@ const EmailContainer = ({ data }: { data: EmailListResponse }) => {
                         0
                     </div>
                     <p className="font-medium text-base mt-2 uppercase" ref={statusRef}></p>
-                    {taskdoneStatus && (<button className="bg-white text-black h-[45px] rounded-full px-4 w-max mt-4 font-medium" onClick={() => window.location.reload()}>Go to Home</button>)}
+                    {taskdoneStatus && (<button className="bg-white cursor-pointer text-black h-[45px] rounded-full px-4 w-max mt-4 font-medium" onClick={() => window.location.reload()}>Go to Home</button>)}
                 </div>
             </div>
         )
