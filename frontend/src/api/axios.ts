@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://emailclient-flax.vercel.app",
+  baseURL: "https://mail-link-olzw.vercel.app",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
