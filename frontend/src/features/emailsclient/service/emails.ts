@@ -41,7 +41,7 @@ export const sendMail = async (email: string, subject: string, content: string, 
             content: content,
             name: name,
         });
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 201) {
             return response.data;
         }
         return null;

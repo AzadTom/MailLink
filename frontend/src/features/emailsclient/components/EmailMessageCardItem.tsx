@@ -7,7 +7,7 @@ const EmailMessageCardItem = (props: EmailMessageCardProps) => {
     const { subject, message, select, handleOnClick, selected } = props;
 
     return (
-        <div className={cn("rounded-xl break-inside-avoid  bg-[#363636] cursor-pointer border border-[#262626] text-white p-4 mx-4", selected(message) ? "bg-[#CFFF04] text-black" : "")} onClick={() => {
+        <div className={cn("rounded-xl break-inside-avoid  bg-[#363636] cursor-pointer border border-[#262626] text-white p-4 mx-4", selected(message) ? "bg-white text-black border-2 border-b-4 border-[#e5e7eb] shadow" : "")} onClick={() => {
             handleOnClick({ ...props });
         }}>
             <span className="p-1 bg-orange-600 text-white text-xs rounded">{select}</span>

@@ -45,7 +45,7 @@ const SingleEmailCard = (props: CardItemProps) => {
                     {Name || "Hiring Manager"}
                     <span className="text-xs p-1 rounded bg-orange-600 text-white w-max ml-1">{company}</span>
                 </p>
-                <p className="text-base mt-1 ">
+                <p className="text-base text-current/50 mt-1 ">
                     <a href={`mailto:${email}`}>{email}</a>
                 </p>
             </div>
