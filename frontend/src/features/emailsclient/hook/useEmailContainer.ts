@@ -9,7 +9,7 @@ const mockApiCall = (i: number) => {
     return new Promise((resolve, reject) => {
 
         if (i === 5) {
-            reject();
+            resolve(null);
         }
         setTimeout(() => {
             resolve({
@@ -66,12 +66,14 @@ export const useEmailContainer = () => {
             const { Name, email, company } = selectList[i];
             const msgIndex = i % selectMessageList.length
             const { subject, message } = selectMessageList[msgIndex];
-            // const result = await sendMail(email, subject, message, Name ? Name : "Hiring Manager", company ? company : "your company");
-            const result = await mockApiCall(i + 1);
+            const result = await sendMail(email, subject, message, Name ? Name : "Hiring Manager", company ? company : "your company");
+            // const result = await mockApiCall(i + 1);
             if (statusRef.current && shapeRef.current && result) {
                 shapeRef.current.textContent = `${i + 1}`;
                 if (i + 1 === selectList.length) {
                     statusRef.current.textContent = `task ${i + 1} is completed.`;
+                    statusRef.current.style.color = `#fff`;
+
                     setTimeout(() => {
                         if (statusRef.current) {
                             statusRef.current.textContent = 'All Tasks done';
@@ -79,7 +81,26 @@ export const useEmailContainer = () => {
                         }
                     }, 2000);
                 } else {
+                    statusRef.current.style.color = `#fff`;
                     statusRef.current.textContent = `task ${i + 1} is completed.`;
+                }
+            }
+
+            if (statusRef.current && shapeRef.current && !result) {
+
+                shapeRef.current.textContent = `${i + 1}`;
+                if (i + 1 === selectList.length) {
+                    statusRef.current.textContent = `task ${i + 1} is not completed.`;
+                    statusRef.current.style.color = `#e7000b`;
+                    setTimeout(() => {
+                        if (statusRef.current) {
+                            statusRef.current.textContent = 'All Tasks done';
+                            setTaskDoneStatus(true);
+                        }
+                    }, 2000);
+                } else {
+                    statusRef.current.textContent = `task ${i + 1} is not completed.`;
+                    statusRef.current.style.color = `#e7000b`;
                 }
             }
         }
