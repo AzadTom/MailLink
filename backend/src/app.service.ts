@@ -16,8 +16,8 @@ export class AppService {
         return response;
     }
 
-    sendEmail = async(email:string,subject:string,content:string,name:string)=>{
-        const response = await this.mailService.sendEmail(email,subject,content,name);
+    sendEmail = async(email:string,subject:string,content:string,name:string,company:string)=>{
+        const response = await this.mailService.sendEmail(email,subject,content,name,company);
         return response;
     }
 }

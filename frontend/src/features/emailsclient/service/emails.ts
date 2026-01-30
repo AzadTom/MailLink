@@ -33,13 +33,14 @@ export const getEmailMessageList = async (): Promise<EmailMessageListResponse | 
     }
 }
 
-export const sendMail = async (email: string, subject: string, content: string, name: string) => {
+export const sendMail = async (email: string, subject: string, content: string, name: string,company:string) => {
     try {
         const response = await api.post("/send-email", {
             email: email,
             subject: subject,
             content: content,
             name: name,
+            company:company,
         });
         if (response.status === 200 || response.status === 201) {
             return response.data;

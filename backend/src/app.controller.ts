@@ -25,8 +25,8 @@ export class AppController {
   }
 
   @Post("/send-email")
-  async sendEmail(@Body("email") email: string, @Body("subject") subject: string, @Body("content") content: string, @Body("name") name: string) {
-    const response = await this.appService.sendEmail(email, subject, content, name);
+  async sendEmail(@Body("email") email: string, @Body("subject") subject: string, @Body("content") content: string, @Body("name") name: string,@Body("company") company:string) {
+    const response = await this.appService.sendEmail(email, subject, content, name,company);
     return response;
   }
 }

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getEmailMessageList } from "../service/emails";
+import { getEmailMessageList, sendMail } from "../service/emails";
 import { useRef, useState } from "react";
 import { EmailListItem, EmailMessageListItem } from "../type/type";
 
@@ -63,10 +63,10 @@ export const useEmailContainer = () => {
 
     const handleSendMail = async () => {
         for (let i = 0; i < selectList.length; i++) {
-            const { Name, email } = selectList[i];
+            const { Name, email, company } = selectList[i];
             const msgIndex = i % selectMessageList.length
             const { subject, message } = selectMessageList[msgIndex];
-            // const result = await sendMail(email, subject, message, Name ? Name : "Hiring Manager");
+            // const result = await sendMail(email, subject, message, Name ? Name : "Hiring Manager", company ? company : "your company");
             const result = await mockApiCall(i + 1);
             if (statusRef.current && shapeRef.current && result) {
                 shapeRef.current.textContent = `${i + 1}`;
