@@ -13,8 +13,8 @@ export class AppController {
   }
 
   @Get("/email_list")
-  async getEmailList(@Query("cursor") cursor: string, @Query("limit") limit: string, @Query("start") start: string, @Query("end") end: string) {
-    const response = await this.appService.getDBEmailList("2e94c8a2-1d01-8101-926c-000bf61deb52", cursor, Number(limit), Number(start), Number(end));
+  async getEmailList(@Query("cursor") cursor: string, @Query("limit") limit: string, @Query("start") start: string, @Query("end") end: string,@Query("select") select:string) {
+    const response = await this.appService.getDBEmailList("2e94c8a2-1d01-8101-926c-000bf61deb52", cursor, Number(limit), Number(start), Number(end),select);
     return response;
   }
 

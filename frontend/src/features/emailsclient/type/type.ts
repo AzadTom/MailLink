@@ -11,7 +11,8 @@ export interface EmailListItem {
   number?: number
   "linkedin "?: string
   email: string
-  Name?: string
+  Name?: string;
+  place?:string;
 }
 
 export type EmailMessageListResponse = EmailMessageListItem[]

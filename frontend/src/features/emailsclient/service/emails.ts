@@ -8,6 +8,8 @@ export const getEmailList = async (): Promise<EmailListResponse | null> => {
             return response.data;
         }
 
+       
+
         return null;
 
 

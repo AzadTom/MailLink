@@ -28,19 +28,34 @@ const EMailCardItem = (props: CardItemProps) => {
 
 export default EMailCardItem;
 
+
+const formatDate = (value: string | number | Date) => {
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return "Invalid date";
+
+    return d.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+};
+
 const SingleEmailCard = (props: CardItemProps) => {
 
     const { Name, company, email, select, series, handleOnClick, selected } = props;
 
     return (
-        <div className={cn("flex gap-2 items-center cursor-pointer mx-4 sm:mx-0", selected(email) ? "bg-white text-black rounded-xl p-2" : "text-white")} onClick={() => {
+        <div className={cn("flex gap-2 items-center cursor-pointer mx-4 sm:mx-0 border border-[#787878] p-4 rounded-xl", selected(email) ? "bg-white text-black rounded-xl p-2" : "text-white")} onClick={() => {
             handleOnClick({ ...props });
         }}>
             <div className={cn("aspect-square rounded-full w-12 h-12  flex justify-center items-center  border border-[#363636]", selected(email) ? "bg-black text-white" : "")}>
                 {series}
             </div>
             <div>
-                <p className="text-xs p-1 rounded bg-yellow-600 text-white w-max mb-1">{select || "HR"}</p>
+                <div className="flex  gap-2 items-center">
+                    <p className="text-xs p-1 rounded bg-yellow-600 text-white w-max mb-1">{select || "HR"}</p>
+                    <p className="text-xs">{formatDate(props["Created Date"])}</p>
+                </div>
                 <p className="text-base  font-medium">
                     {Name || "Hiring Manager"}
                     <span className="text-xs p-1 rounded bg-orange-600 text-white w-max ml-1">{company}</span>

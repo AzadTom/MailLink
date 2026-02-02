@@ -6,8 +6,8 @@ import { MailService } from './mail/mail.service';
 export class AppService {
 
     constructor(private notionSerive: NotionService,private mailService:MailService) { }
-    getDBEmailList = async (number:string,cursor:string,limit:number,start:number,end:number) => {
-        const response = await this.notionSerive.getDBEmailList(number,cursor,limit,start,end);
+    getDBEmailList = async (number:string,cursor:string,limit:number,start:number,end:number,select:string) => {
+        const response = await this.notionSerive.getDBEmailList(number,cursor,limit,start,end,select);
         return response;
     }
 
