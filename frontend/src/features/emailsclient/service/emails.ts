@@ -1,5 +1,5 @@
 import api from "../../../api/axios";
-import { EmailListResponse, EmailMessageListResponse } from "../type/type";
+import { EmailListResponse, EmailMessageListResponse, NewRecordEmailPayload } from "../type/type";
 
 export const getEmailList = async (): Promise<EmailListResponse | null> => {
     try {
@@ -8,15 +8,38 @@ export const getEmailList = async (): Promise<EmailListResponse | null> => {
             return response.data;
         }
 
-       
-
         return null;
-
 
     } catch (error) {
         console.error(error);
         return null;
 
+    }
+}
+
+export const addNewRecord = async (payload: NewRecordEmailPayload) => {
+    try {
+        const response = await api.post("/add_new_record", payload);
+        if (response.status === 200 || response.status === 201) {
+            return true;
+        }
+        return null;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export const updateEmail = async (email: string) => {
+    try {
+        const response = await api.post("/update_email_list", { email });
+        if (response.status === 201) {
+            return response.data;
+        }
+        return null;
+    } catch (error) {
+        console.error(error);
+        return null;
     }
 }
 
@@ -35,14 +58,14 @@ export const getEmailMessageList = async (): Promise<EmailMessageListResponse | 
     }
 }
 
-export const sendMail = async (email: string, subject: string, content: string, name: string,company:string) => {
+export const sendMail = async (email: string, subject: string, content: string, name: string, company: string) => {
     try {
         const response = await api.post("/send-email", {
             email: email,
             subject: subject,
             content: content,
             name: name,
-            company:company,
+            company: company,
         });
         if (response.status === 200 || response.status === 201) {
             return response.data;

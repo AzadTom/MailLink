@@ -1,13 +1,35 @@
 'use client';
 import ListAdapter from "@/src/components/ListAdapter";
-import { EmailListResponse } from "./type/type";
-import { Check, X } from "lucide-react";
+import { EmailListItem, EmailListResponse } from "./type/type";
+import { Check, Plus, Search, X } from "lucide-react";
 import EmailMessageCardItem from "./components/EmailMessageCardItem";
 import EMailCardItem from "./components/EmailCardItem";
 import { cn } from "@/lib/utils";
 import { useEmailContainer } from "./hook/useEmailContainer";
+import { useState } from "react";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import { useRouter } from "next/navigation";
 
 const EmailContainer = ({ data }: { data: EmailListResponse }) => {
+
+    const router = useRouter();
+    const [list, setList] = useState<EmailListItem[]>(data.data);
+    const [email, setEmail] = useState("");
+
+    const groupedData = [];
+    for (let i = 0; i < list.length; i += 5) {
+        groupedData.push(list.slice(i, i + 5));
+    }
+
+    const handleOnChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const searchEmail = e.target.value.toLowerCase().trim();
+        const filtered = data.data.filter(item =>
+            item.email.toLowerCase().includes(searchEmail)
+        );
+        setList(filtered);
+        setEmail(searchEmail);
+    };
+
 
     const { status, shapeRef, statusRef,
         taskdoneStatus, selectList, emailmessagelist,
@@ -33,22 +55,66 @@ const EmailContainer = ({ data }: { data: EmailListResponse }) => {
     return (
         <>
             {status === "emailist" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mb-5">
-                    <ListAdapter
-                        data={data.data}
-                        renderItem={(item, index) =>
-                        (<EMailCardItem key={item.email}
-                            {...item} series={index + 1}
-                            selected={(email: string) => {
-                                const isFound = selectList.findIndex((item) => item.email.toLowerCase() === email.toLowerCase());
-                                if (isFound === -1) {
-                                    return false;
-                                }
-                                return true;
-                            }}
-                            handleOnClick={handleEmail} />)}
-                    />
-                </div>
+                <>
+                    <div className="relative h-13  w-full sm:max-w-sm px-4 sm:px-0">
+                        <label htmlFor="email-search" className="sr-only">
+                            Search email
+                        </label>
+
+                        <Search
+                            size={24}
+                            className="absolute left-7 sm:left-4  top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                        />
+
+                        <input
+                            id="email-search"
+                            type="text"
+                            name="search"
+                            value={email}
+                            onChange={handleOnChangeSearch}
+                            placeholder="Search email"
+                            autoComplete="off"
+                            inputMode="email"
+                            className="mb-5 w-full h-13 rounded-xl outline-none border border-[#787878] bg-transparent text-white pl-12 pr-4 placeholder:text-gray-400"
+                        />
+                    </div>
+
+                    <ResponsiveMasonry
+                        className="mb-5"
+                        columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+                        gutterBreakPoints={{ 350: "12px", 750: "16px", 900: "24px" }}
+                    >
+                        <Masonry>
+                            {groupedData.map((group, groupIndex) => (
+                                <div
+                                    key={groupIndex}
+                                    className="space-y-4 mt-4 w-full"
+                                >
+                                    <ListAdapter
+                                        data={group}
+                                        renderItem={(item, index) => (
+                                            <EMailCardItem
+                                                key={item.email}
+                                                {...item}
+                                                series={groupIndex * 5 + index + 1}
+                                                selected={(email: string) =>
+                                                    selectList.some(
+                                                        (i) => i.email.toLowerCase() === email.toLowerCase()
+                                                    )
+                                                }
+                                                handleOnClick={handleEmail}
+                                            />
+                                        )}
+                                    />
+                                    <p className="mt-4 text-sm text-[#787878] font-medium text-center">
+                                        — End of 5 email group —
+                                    </p>
+                                </div>
+                            ))}
+                        </Masonry>
+                    </ResponsiveMasonry>
+
+                </>
             )}
             {status === "emailmessage" && (
                 <div className="columns-1 sm:columns-2 md:columns-2  mb-5 space-y-5">
@@ -67,10 +133,16 @@ const EmailContainer = ({ data }: { data: EmailListResponse }) => {
                 </div>
             )}
             {selectList.length !== 0 && (
-                <Check onClick={handleOnDone} className="fixed bottom-5 right-5 rounded-full  size-12 p-2 cursor-pointer bg-white text-black shadow" />
+                <>
+                    <Check onClick={handleOnDone} className="fixed bottom-5 right-5 rounded-full  size-12 p-2 cursor-pointer bg-white text-black shadow" />
+                    <X onClick={handleOnCross} className="fixed bottom-20 right-5 rounded-full  size-12 p-2 cursor-pointer bg-white text-black shadow" />
+                    <p className="fixed z-100 top-4 right-4 rounded-xl  size-10 p-2 cursor-pointer bg-white text-black shadow flex justify-center items-center">{selectList.length}</p>
+                </>
             )}
-            {selectList.length !== 0 && (
-                <X onClick={handleOnCross} className="fixed bottom-20 right-5 rounded-full  size-12 p-2 cursor-pointer bg-white text-black shadow" />
+            {selectList.length === 0 && (
+                <Plus onClick={() => {
+                    router.push("/new-record")
+                }} className="fixed bottom-4 right-4 rounded-full size-12 p-2 cursor-pointer bg-white text-black shadow" />
             )}
         </>
     )

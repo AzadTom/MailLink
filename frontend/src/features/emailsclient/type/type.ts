@@ -23,3 +23,14 @@ export interface EmailMessageListItem {
   subject: string
 }
 
+export type NewRecordEmailPayload = {
+  createdDate: string;   // YYYY-MM-DD
+  name: string;
+  company: string;
+  linkedin: string;      // URL string
+  number: string;        // keep string if coming from form
+  place: string;
+  email: string;
+};
+
+

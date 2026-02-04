@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { EmailListItem } from "../type/type";
 import { cn } from "@/lib/utils";
+import { CircleX } from "lucide-react";
+import { updateEmail } from "../service/emails";
+import { useRouter } from "next/navigation";
 
 type CardItemProps = EmailListItem & { series: number } & { selected: (email: string) => boolean } & { handleOnClick: (item: EmailListItem) => void };
 const EMailCardItem = (props: CardItemProps) => {
@@ -42,8 +45,13 @@ const formatDate = (value: string | number | Date) => {
 
 const SingleEmailCard = (props: CardItemProps) => {
 
+    const router = useRouter();
     const { Name, company, email, select, series, handleOnClick, selected } = props;
-
+    const handleUpdateEmail = () => {
+        updateEmail(email).then(() => {
+            router.refresh();
+        });
+    };
     return (
         <div className={cn("flex gap-2 items-center cursor-pointer mx-4 sm:mx-0 border border-[#787878] p-4 rounded-xl", selected(email) ? "bg-white text-black rounded-xl p-2" : "text-white")} onClick={() => {
             handleOnClick({ ...props });
@@ -51,17 +59,22 @@ const SingleEmailCard = (props: CardItemProps) => {
             <div className={cn("aspect-square rounded-full w-12 h-12  flex justify-center items-center  border border-[#363636]", selected(email) ? "bg-black text-white" : "")}>
                 {series}
             </div>
-            <div>
-                <div className="flex  gap-2 items-center">
-                    <p className="text-xs p-1 rounded bg-yellow-600 text-white w-max mb-1">{select || "HR"}</p>
-                    <p className="text-xs">{formatDate(props["Created Date"])}</p>
+            <div className="w-full">
+                <div className="w-full flex justify-between items-center">
+                    <div className="flex  gap-2 items-center">
+                        <p className="text-xs p-1 rounded bg-yellow-600 text-white w-max mb-1">{select || "HR"}</p>
+                        <p className="text-xs">{formatDate(props["Created Date"])}</p>
+                    </div>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <CircleX onClick={handleUpdateEmail} />
+                    </div>
                 </div>
                 <p className="text-base  font-medium">
                     {Name || "Hiring Manager"}
                     <span className="text-xs p-1 rounded bg-orange-600 text-white w-max ml-1">{company}</span>
                 </p>
-                <p className="text-base text-current/50 mt-1 ">
-                    <a href={`mailto:${email}`}>{email}</a>
+                <p className="text-base text-current/50 mt-1  max-w-2xl">
+                    <a href={`mailto:${email}`}>{email.substring(0, 28)}</a>
                 </p>
             </div>
         </div>
