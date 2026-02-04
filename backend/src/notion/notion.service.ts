@@ -52,11 +52,20 @@ export class NotionService {
         }
     }
 
-    async updateEmail(email: string) {
+    async updateEmail(email: string, select: string) {
         const pageId = await this.findPageIdByEmail(email, this.dataSourceId);
         if (!pageId) return;
-
         const page: any = await this.notion.pages.retrieve({ page_id: pageId });
+        if (email && select) {
+            await this.notion.pages.update({
+                page_id: pageId,
+                properties: {
+                    select: { rich_text: [{ type: "text", text: { content: "done" } }] }
+                }
+            });
+            return;
+        }
+
         const emailProp = page?.properties?.email;
         if (!emailProp) return;
 
@@ -111,11 +120,13 @@ export class NotionService {
             const response = await this.notion.dataSources.query({
                 data_source_id: dataSourcesId,
                 start_cursor: cursor,
-                page_size: limit ? limit : undefined,
-                sorts: [{
-                    direction: "descending",
-                    property: "Created Date",
-                }],
+                page_size: limit || undefined,
+                sorts: [
+                    {
+                        direction: "descending",
+                        property: "Created Date",
+                    },
+                ],
                 filter: {
                     and: [
                         {
@@ -123,15 +134,23 @@ export class NotionService {
                             email: { is_not_empty: true },
                         },
                         ...(select
-                            ? [{
-                                property: "select",
-                                select: { equals: select },
-                            }]
-                            : []),
+                            ? [
+                                {
+                                    property: "select",
+                                    rich_text: { contains: select },
+                                },
+                            ]
+                            : [
+                                {
+                                    property: "select",
+                                    rich_text: { is_empty: true as const },
+                                },
+                            ])
+                        ,
                     ],
-                }
-
+                },
             });
+
 
             if (start && end) {
                 return {

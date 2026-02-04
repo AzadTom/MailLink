@@ -20,8 +20,8 @@ export class AppController {
   }
 
   @Post("/update_email_list")
-  async updateEmailList(@Body("email") email: string) {
-    const result = await this.appService.updateEmailList(email);
+  async updateEmailList(@Body("email") email: string,@Body("select") select:string) {
+    const result = await this.appService.updateEmailList(email,select);
     return result;
   }
 

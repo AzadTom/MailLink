@@ -9,16 +9,24 @@ import { useEmailContainer } from "./hook/useEmailContainer";
 import { useState } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const EmailContainer = ({ data }: { data: EmailListResponse }) => {
+const EmailContainer = ({ data, data2 }: { data: EmailListResponse, data2: EmailListResponse }) => {
 
     const router = useRouter();
     const [list, setList] = useState<EmailListItem[]>(data.data);
+    const [sendedlist, setSendedList] = useState<EmailListItem[]>(data2.data);
     const [email, setEmail] = useState("");
+    const [sendemail, setSendEmail] = useState("");
 
     const groupedData = [];
+    const groupedData2 = [];
     for (let i = 0; i < list.length; i += 5) {
         groupedData.push(list.slice(i, i + 5));
+    }
+
+    for (let i = 0; i < sendedlist.length; i += 5) {
+        groupedData2.push(sendedlist.slice(i, i + 5));
     }
 
     const handleOnChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +36,15 @@ const EmailContainer = ({ data }: { data: EmailListResponse }) => {
         );
         setList(filtered);
         setEmail(searchEmail);
+    };
+
+    const handleOnChangeSearch2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const searchEmail = e.target.value.toLowerCase().trim();
+        const filtered = data.data.filter(item =>
+            item.email.toLowerCase().includes(searchEmail)
+        );
+        setSendedList(filtered);
+        setSendEmail(searchEmail);
     };
 
 
@@ -56,64 +73,128 @@ const EmailContainer = ({ data }: { data: EmailListResponse }) => {
         <>
             {status === "emailist" && (
                 <>
-                    <div className="relative h-13  w-full sm:max-w-sm px-4 sm:px-0">
-                        <label htmlFor="email-search" className="sr-only">
-                            Search email
-                        </label>
+                    <Tabs defaultValue="email_list">
+                        <TabsList className="mx-4 sm:mx-0 ">
+                            <TabsTrigger className="text-black hover:text-black cursor-pointer" value="email_list">Email List</TabsTrigger>
+                            <TabsTrigger className="text-black hover:text-black cursor-pointer" value="sended_email_list">Sended Email List</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="email_list">
+                            <div className="relative h-13  w-full sm:max-w-sm px-4 sm:px-0">
+                                <label htmlFor="email-search" className="sr-only">
+                                    Search email
+                                </label>
 
-                        <Search
-                            size={24}
-                            className="absolute left-7 sm:left-4  top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                        />
+                                <Search
+                                    size={24}
+                                    className="absolute left-7 sm:left-4  top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                                />
 
-                        <input
-                            id="email-search"
-                            type="text"
-                            name="search"
-                            value={email}
-                            onChange={handleOnChangeSearch}
-                            placeholder="Search email"
-                            autoComplete="off"
-                            inputMode="email"
-                            className="mb-5 w-full h-13 rounded-xl outline-none border border-[#787878] bg-transparent text-white pl-12 pr-4 placeholder:text-gray-400"
-                        />
-                    </div>
-
-                    <ResponsiveMasonry
-                        className="mb-5"
-                        columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
-                        gutterBreakPoints={{ 350: "12px", 750: "16px", 900: "24px" }}
-                    >
-                        <Masonry>
-                            {groupedData.map((group, groupIndex) => (
-                                <div
-                                    key={groupIndex}
-                                    className="space-y-4 mt-4 w-full"
-                                >
-                                    <ListAdapter
-                                        data={group}
-                                        renderItem={(item, index) => (
-                                            <EMailCardItem
-                                                key={item.email}
-                                                {...item}
-                                                series={groupIndex * 5 + index + 1}
-                                                selected={(email: string) =>
-                                                    selectList.some(
-                                                        (i) => i.email.toLowerCase() === email.toLowerCase()
-                                                    )
-                                                }
-                                                handleOnClick={handleEmail}
+                                <input
+                                    id="email-search"
+                                    type="text"
+                                    name="search"
+                                    value={email}
+                                    onChange={handleOnChangeSearch}
+                                    placeholder="Search email"
+                                    autoComplete="off"
+                                    inputMode="email"
+                                    className="mb-5 w-full h-13 rounded-xl outline-none border border-[#787878] bg-transparent text-white pl-12 pr-4 placeholder:text-gray-400"
+                                />
+                            </div>
+                            <ResponsiveMasonry
+                                className="mb-5"
+                                columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+                                gutterBreakPoints={{ 350: "12px", 750: "16px", 900: "24px" }}
+                            >
+                                <Masonry>
+                                    {groupedData.map((group, groupIndex) => (
+                                        <div
+                                            key={groupIndex}
+                                            className="space-y-4 mt-4 w-full"
+                                        >
+                                            <ListAdapter
+                                                data={group}
+                                                renderItem={(item, index) => (
+                                                    <EMailCardItem
+                                                        key={item.email}
+                                                        {...item}
+                                                        series={groupIndex * 5 + index + 1}
+                                                        selected={(email: string) =>
+                                                            selectList.some(
+                                                                (i) => i.email.toLowerCase() === email.toLowerCase()
+                                                            )
+                                                        }
+                                                        handleOnClick={handleEmail}
+                                                    />
+                                                )}
                                             />
-                                        )}
-                                    />
-                                    <p className="mt-4 text-sm text-[#787878] font-medium text-center">
-                                        — End of 5 email group —
-                                    </p>
-                                </div>
-                            ))}
-                        </Masonry>
-                    </ResponsiveMasonry>
+                                            <p className="mt-4 text-sm text-[#787878] font-medium text-center">
+                                                — End of 5 email group —
+                                            </p>
+                                        </div>
+                                    ))}
+                                </Masonry>
+                            </ResponsiveMasonry>
+                        </TabsContent>
+                        <TabsContent value="sended_email_list">
+                            <div className="relative h-13  w-full sm:max-w-sm px-4 sm:px-0">
+                                <label htmlFor="email-search" className="sr-only">
+                                    Search email
+                                </label>
 
+                                <Search
+                                    size={24}
+                                    className="absolute left-7 sm:left-4  top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                                />
+
+                                <input
+                                    id="email-search"
+                                    type="text"
+                                    name="search"
+                                    value={sendemail}
+                                    onChange={handleOnChangeSearch2}
+                                    placeholder="Search email"
+                                    autoComplete="off"
+                                    inputMode="email"
+                                    className="mb-5 w-full h-13 rounded-xl outline-none border border-[#787878] bg-transparent text-white pl-12 pr-4 placeholder:text-gray-400"
+                                />
+                            </div>
+                            <ResponsiveMasonry
+                                className="mb-5"
+                                columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+                                gutterBreakPoints={{ 350: "12px", 750: "16px", 900: "24px" }}
+                            >
+                                <Masonry>
+                                    {groupedData2.map((group, groupIndex) => (
+                                        <div
+                                            key={groupIndex}
+                                            className="space-y-4 mt-4 w-full"
+                                        >
+                                            <ListAdapter
+                                                data={group}
+                                                renderItem={(item, index) => (
+                                                    <EMailCardItem
+                                                        key={item.email}
+                                                        {...item}
+                                                        series={groupIndex * 5 + index + 1}
+                                                        selected={(email: string) =>
+                                                            selectList.some(
+                                                                (i) => i.email.toLowerCase() === email.toLowerCase()
+                                                            )
+                                                        }
+                                                        handleOnClick={handleEmail}
+                                                    />
+                                                )}
+                                            />
+                                            <p className="mt-4 text-sm text-[#787878] font-medium text-center">
+                                                — End of 5 email group —
+                                            </p>
+                                        </div>
+                                    ))}
+                                </Masonry>
+                            </ResponsiveMasonry>
+                        </TabsContent>
+                    </Tabs>
                 </>
             )}
             {status === "emailmessage" && (
@@ -136,7 +217,7 @@ const EmailContainer = ({ data }: { data: EmailListResponse }) => {
                 <>
                     <Check onClick={handleOnDone} className="fixed bottom-5 right-5 rounded-full  size-12 p-2 cursor-pointer bg-white text-black shadow" />
                     <X onClick={handleOnCross} className="fixed bottom-20 right-5 rounded-full  size-12 p-2 cursor-pointer bg-white text-black shadow" />
-                    <p className="fixed z-100 top-4 right-4 rounded-xl  size-10 p-2 cursor-pointer bg-white text-black shadow flex justify-center items-center">{selectList.length}</p>
+                    <p className="fixed z-100 top-4 right-4 rounded-xl  size-10 p-2 cursor-pointer bg-white text-black shadow flex justify-center items-center font-medium">{selectList.length}</p>
                 </>
             )}
             {selectList.length === 0 && (

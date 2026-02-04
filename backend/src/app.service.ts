@@ -12,8 +12,8 @@ export class AppService {
         return response;
     }
 
-    updateEmailList = async(email:string)=>{
-        const response = await this.notionSerive.updateEmail(email);
+    updateEmailList = async(email:string,select:string)=>{
+        const response = await this.notionSerive.updateEmail(email,select);
         return response;
     }
 

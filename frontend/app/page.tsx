@@ -2,14 +2,15 @@ export const dynamic = "force-dynamic";
 import EmailContainer from "@/src/features/emailsclient/EmailContainer";
 import { getEmailList } from "@/src/features/emailsclient/service/emails"
 
-const page = async() => {
+const page = async () => {
 
   const emaillist = await getEmailList();
-  if(!emaillist) return null;
+  const sendedemaillist = await getEmailList("done");
+  if (!emaillist || !sendedemaillist) return null;
 
   return (
     <div>
-      <EmailContainer data={emaillist}/>
+      <EmailContainer data={emaillist} data2={sendedemaillist} />
     </div>
   )
 }

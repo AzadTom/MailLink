@@ -1,9 +1,9 @@
 import api from "../../../api/axios";
 import { EmailListResponse, EmailMessageListResponse, NewRecordEmailPayload } from "../type/type";
 
-export const getEmailList = async (): Promise<EmailListResponse | null> => {
+export const getEmailList = async (select: string = ""): Promise<EmailListResponse | null> => {
     try {
-        const response = await api.get("/email_list");
+        const response = await api.get(`/email_list?select=${select ? select : ""}`);
         if (response.status === 200) {
             return response.data;
         }
@@ -30,9 +30,20 @@ export const addNewRecord = async (payload: NewRecordEmailPayload) => {
     }
 }
 
-export const updateEmail = async (email: string) => {
+export const updateEmail = async (email: string, select: string = "") => {
     try {
-        const response = await api.post("/update_email_list", { email });
+        let payload;
+        if (select) {
+            payload = {
+                select: select,
+                email: email,
+            }
+        } else {
+            payload = {
+                email: email,
+            }
+        }
+        const response = await api.post("/update_email_list", payload);
         if (response.status === 201) {
             return response.data;
         }
@@ -67,6 +78,7 @@ export const sendMail = async (email: string, subject: string, content: string, 
             name: name,
             company: company,
         });
+        await updateEmail(email, "done");
         if (response.status === 200 || response.status === 201) {
             return response.data;
         }

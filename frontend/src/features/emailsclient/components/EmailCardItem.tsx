@@ -50,6 +50,8 @@ const SingleEmailCard = (props: CardItemProps) => {
     const handleUpdateEmail = () => {
         updateEmail(email).then(() => {
             router.refresh();
+        }).catch(() => {
+            router.refresh();
         });
     };
     return (
