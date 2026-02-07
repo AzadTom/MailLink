@@ -40,7 +40,7 @@ const EmailContainer = ({ data, data2 }: { data: EmailListResponse, data2: Email
 
     const handleOnChangeSearch2 = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchEmail = e.target.value.toLowerCase().trim();
-        const filtered = data.data.filter(item =>
+        const filtered = data2.data.filter(item =>
             item.email.toLowerCase().includes(searchEmail)
         );
         setSendedList(filtered);
